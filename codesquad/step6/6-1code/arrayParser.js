@@ -5,13 +5,7 @@
 // //result는 해당 배열을 분석한 형태이다.
 // //예를들어, 다음과 같은 결과일 수 있다. (꼭 아래 형태일 필요 없음)
 
-// { type: 'array',
-//   child: 
-//    [ { type: 'number', value: '123', child: [] },
-//      { type: 'number', value: '22', child: [] },
-//      { type: 'number', value: '33', child: [] } 
-//     ] 
-// }
+
 
 
 // const token = new Token();
@@ -32,13 +26,6 @@ const Token  = class {
         return str.match(/\w+/g);
     }
 }
-
-const token = new Token();
-token.signArr(str)
-token.numberArr(str)
-
-console.log(token.arrayStack)
-console.log(token.numberStack)
 
 
 const Lexer = class {
@@ -64,22 +51,48 @@ const Lexer = class {
     }
 }
 
+// const token = new Token();
+// const lexer = new Lexer();
+// token.signArr(str)
+// token.numberArr(str)
+// lexer.makeChildObj(token.numberStack)
 
-const lexer = new Lexer();
-lexer.makeChildObj(["123", "22", "33"])
-console.log(lexer.child)
+// console.log(token.arrayStack)
+// console.log(token.numberStack)
+
+// console.log(lexer.child)
+
+// { type: 'array',
+//   child: 
+//    [ { type: 'number', value: '123', child: [] },
+//      { type: 'number', value: '22', child: [] },
+//      { type: 'number', value: '33', child: [] } 
+//     ] 
+// }
 
 const Parser = class {
-    constructor(str){
-        this.contentArr = {"type": type, "value": value, "child": contentChild};
-        this.child = [];
-        this.arrayParserForm = {"type": type, "child": child};
+    constructor(){
+        this.parseForm = {};
     }
-    excution(){
-        
+    makeArrayParser(lexerChild, signStack){ // 입력 : signStack 마지막, 출력 : 폼
+        if (signStack[signStack.length-1] === ']'){
+            this.parseForm.type = 'array';
+        }
+        this.parseForm.child = lexerChild;
     }
-
 }
+const token = new Token();
+const lexer = new Lexer();
+const parser = new Parser()
+token.signArr(str)
+token.numberArr(str)
+lexer.makeChildObj(token.numberStack)
+parser.makeArrayParser(lexer.child, token.arrayStack)
+
+console.log(token.arrayStack)
+console.log(token.numberStack)
+console.log(lexer.child)
+console.log(parser.parseForm)
 
 
 
