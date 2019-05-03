@@ -29,7 +29,7 @@ const Token  = class {
         str.split("").forEach((el)=>{if(el === "[" || el === "]"){this.arrayStack.push(el)}});
     }
     numberArr(str){
-        return str.match(/\d+/g);
+        return str.match(/\w+/g);
     }
 }
 
@@ -42,12 +42,32 @@ console.log(token.numberStack)
 
 
 const Lexer = class {
-    constructor(str){
-        this.lexerType = typeof(str);
-        this.lexerValue = str;
-        this.child = this.child;
+    constructor(){
+        this.child = [];
+        this.lastChild = [];
+    }
+    typeCheck(val){ // 입력 : value,  출력 : type
+        if(Number(val) !== NaN) {
+           val = Number(val);
+        }
+        return typeof(val) 
+    }
+    makeChildObj(val){ // 입력 : token.numberStack, ["123", "22", "33"] 출력 : { type: 'number', value: '123', child: [] }
+        val.forEach((el)=>{
+            const childObj = {}
+            childObj.type = this.typeCheck(el);
+            childObj.value = el;
+            childObj.child = this.typeCheck(el) === "number" ? this.lastChild : this.child;
+            
+            this.child.push(childObj);
+        });
     }
 }
+
+
+const lexer = new Lexer();
+lexer.makeChildObj(["123", "22", "33"])
+console.log(lexer.child)
 
 const Parser = class {
     constructor(str){
