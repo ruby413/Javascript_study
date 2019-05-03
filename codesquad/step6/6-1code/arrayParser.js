@@ -14,34 +14,32 @@
 // }
 
 
-// const Token = class {
-//     constructor(str){
-//         this.type = typeof this.value;
-//         this.value = this.value;
-//         this.child = this.child;
-//     }
-
-//     toString(){
-//         return this.child + this.value + "," + this.child;
-//     }
-// }
-
 // const token = new Token();
 
 // console.log(token("[123, 22, 33]"))
 
-
+const str = "[123, 22, 33]";;
 const Token  = class {
-    constructor(str){
-        this.tokenArr = str.split("");
-        this.contentArr = str.match(/\d+/g);
-        this.arrayStack = [];
+    constructor(){
+        this.arrayStack = [];   // ["[", "]"]
+        this.numberStack = this.numberArr(str)   //["123", "22", "33"]
     }
 
-    signCheck(){
-        tokenArr.forEach((el)=>{if(el === "[" || el === "]"){arrayStack.push(el)}});
+    signArr(str){
+        str.split("").forEach((el)=>{if(el === "[" || el === "]"){this.arrayStack.push(el)}});
+    }
+    numberArr(str){
+        return str.match(/\d+/g);
     }
 }
+
+const token = new Token();
+token.signArr(str)
+token.numberArr(str)
+
+console.log(token.arrayStack)
+console.log(token.numberStack)
+
 
 const Lexer = class {
     constructor(str){
@@ -64,16 +62,16 @@ const Parser = class {
 }
 
 
-const str = "[123, 22, 33]";;
-const arrayStack = []
-str.split("").forEach((el)=>{if(el === "[" || el === "]"){arrayStack.push(el)}})
-console.log(arrayStack)
-// console.log(str.split(""))
 
-// if (str.split("")[0]==="[")
+// const arrayStack = []
+// str.split("").forEach((el)=>{if(el === "[" || el === "]"){arrayStack.push(el)}})
+// console.log(arrayStack)
+// // console.log(str.split(""))
 
-// const number = str.match(/\d+/g)
-// Number(number[0])
+// // if (str.split("")[0]==="[")
+
+// // const number = str.match(/\d+/g)
+// // Number(number[0])
 
 
-console.log(str.match(/\w+/g))
+// console.log(str.match(/\w+/g))
