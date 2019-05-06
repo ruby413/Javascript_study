@@ -11,33 +11,30 @@ const Token  = class {
     }
 }
 
-const Lexer = class {
+const Parser = class {
     constructor(){
         this.child = [];
         this.lastChild = [];
+        this.parseForm = {};
     }
-    typeCheck(val){ 
+    lexer(val){ 
         if(Number(val) !== NaN) {
            val = Number(val);
         }
         return typeof(val) 
     }
+
     makeChildObj(val){
         val.forEach((el)=>{
             const childObj = {}
-            childObj.type = this.typeCheck(el);
+            childObj.type = this.lexer(el);
             childObj.value = el;
-            childObj.child = this.typeCheck(el) === "number" ? this.lastChild : this.child;
+            childObj.child = this.lexer(el) === "number" ? this.lastChild : this.child;
             
             this.child.push(childObj);
         });
     }
-}
 
-const Parser = class {
-    constructor(){
-        this.parseForm = {};
-    }
     makeArrayParser(lexerChild, signStack){ 
         if (signStack[signStack.length-1] === ']'){
             this.parseForm.type = 'array';
@@ -48,14 +45,13 @@ const Parser = class {
 
 
 const token = new Token();
-const lexer = new Lexer();
 const parser = new Parser()
 
 const ArrayForm = (str) => {
     token.signArr(str);
     const numberStack = token.numberArr(str)
-    lexer.makeChildObj(numberStack)
-    parser.makeArrayParser(lexer.child, token.arrayStack)
+    parser.makeChildObj(numberStack)
+    parser.makeArrayParser(parser.child, token.arrayStack)
     return parser.parseForm
 }
 
