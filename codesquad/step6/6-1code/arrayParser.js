@@ -1,60 +1,55 @@
-const Token  = class {
+const ArrayParser = class {
     constructor(){
-        this.arrayStack = []; 
-    }
-
-    signArr(str){
-        str.split("").forEach((el)=>{if(el === "[" || el === "]"){this.arrayStack.push(el)}});
-    }
-    numberArr(str){
-        return str.match(/\w+/g);
-    }
-}
-
-const Parser = class {
-    constructor(){
-        this.child = [];
-        this.lastChild = [];
+        this.lexerArray = [];
         this.parseForm = {};
     }
-    lexer(val){ 
-        if(Number(val) !== NaN) {
-           val = Number(val);
-        }
-        return typeof(val) 
+
+    tokenize(str){
+        const tokenArray = str.match(/\w+/g);
+        const arrBlacket = str.split("");
+        if(arrBlacket[0] === "["){
+            tokenArray.unshift(arrBlacket[0]);
+            tokenArray.push(arrBlacket[arrBlacket.length-1]);
+        } 
+        return tokenArray // '[','123','22','33',']'
     }
 
-    makeChildObj(val){
-        val.forEach((el)=>{
-            const childObj = {}
-            childObj.type = this.lexer(el);
-            childObj.value = el;
-            childObj.child = this.lexer(el) === "number" ? this.lastChild : this.child;
-            
-            this.child.push(childObj);
+    lexer(arr){
+        arr.pop();
+        arr.forEach((el)=>{
+            const lexerObj = {}
+            if (el === '['){
+                lexerObj.type = "array"
+            }else if (!isNaN(Number(el))){
+                lexerObj.type = typeof(el)
+                lexerObj.value = el;
+            }
+            lexerObj.child = []
+            this.lexerArray.push(lexerObj);
         });
+        return this.lexerArray; // [{type : ... value : ... child : ...}]
     }
 
-    makeArrayParser(lexerChild, signStack){ 
-        if (signStack[signStack.length-1] === ']'){
-            this.parseForm.type = 'array';
+    parser(arr){ 
+        if(this.lexerArray[0].type === "array"){
+            this.lexerArray.shift();
+            this.parseForm.type = "array";
+            this.parseForm.child = this.lexerArray;
         }
-        this.parseForm.child = lexerChild;
+        return this.parseForm
     }
 }
 
 
-const token = new Token();
-const parser = new Parser()
+const arrayParser = new ArrayParser()
 
 const ArrayForm = (str) => {
-    token.signArr(str);
-    const numberStack = token.numberArr(str)
-    parser.makeChildObj(numberStack)
-    parser.makeArrayParser(parser.child, token.arrayStack)
-    return parser.parseForm
+    const tokenizer = arrayParser.tokenize(str)
+    const lexer = arrayParser.lexer(tokenizer);
+    const parser = arrayParser.parser(lexer)
+    return parser;
 }
 
 const str = "[123, 22, 33]";
 const result = ArrayForm(str);
-console.log(JSON.stringify(result, null, 2))
+console.log(JSON.stringify(result, null, 2)); 
