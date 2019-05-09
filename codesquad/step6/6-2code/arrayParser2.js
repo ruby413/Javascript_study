@@ -13,7 +13,7 @@ const ArrayParser = class {
                 word = ""
                 if(str[i] === "[" || str[i] === "]"){this.tokenArr.push(str[i])} //배열 토큰 푸쉬
             }else{
-                if(!(str[i] ===" " && str[i] === "[")){word = word + str[i]} //일반 토큰 생성
+                if(!(str[i] ===" " && str[i] === "[")){word = word + str[i].trim()} //일반 토큰 생성
             }
         }
         this.removeToken(this.tokenArr,"")
@@ -34,7 +34,13 @@ const ArrayParser = class {
                 lexerObj.type = "array"
             }else if(token !== ']'){
                 if (!isNaN(token)){
-                lexerToken = Number(token)
+                    lexerToken = Number(token)
+                }else if(token[0] === "'"){
+                    lexerToken = token.match(/\w+/g)[0]
+                }else if(token === "null"){
+                    lexerToken = null
+                }else if(token === "true" || token === "false"){
+                    lexerToken = Boolean(token)
                 }
                 lexerObj.type = typeof(lexerToken)
                 lexerObj.value = lexerToken
@@ -48,6 +54,6 @@ const ArrayParser = class {
 
 const arrayParser = new ArrayParser()
 const token = arrayParser.tokenizer(str)
-console.log(token.length)
+console.log(token)
 console.log(arrayParser.lexer(token))
 
