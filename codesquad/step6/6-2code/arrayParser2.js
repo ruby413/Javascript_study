@@ -3,6 +3,7 @@ const str = "['1a3',[null,false,['11',[112233],112],55, '99'],33, true]"
 const ArrayParser = class {
     constructor(){
         this.tokenArr = []
+        this.lexerArray = [];
     }
     tokenizer(str){
         let word = ""
@@ -12,16 +13,41 @@ const ArrayParser = class {
                 word = ""
                 if(str[i] === "[" || str[i] === "]"){this.tokenArr.push(str[i])} //배열 토큰 푸쉬
             }else{
-                if(!(str[i] == " " && str[i] == "[")){word = word + str[i]} //일반 토큰 생성
+                if(!(str[i] ===" " && str[i] === "[")){word = word + str[i]} //일반 토큰 생성
             }
         }
-        this.tokenArr.forEach((token) => this.RemoveWhitespace(token))
+        this.removeToken(this.tokenArr,"")
         return this.tokenArr
     }
-    RemoveWhitespace(token){
-        if(token===""){this.tokenArr.splice(this.tokenArr.indexOf(""),1)}
+
+    removeToken(arr,token){
+        arr.forEach((arrParam) => {if(arrParam===token){arr.splice(arr.indexOf(token),1)}})
+    }
+
+
+    lexer(arr){
+        this.removeToken(arr,"]")
+        arr.forEach((token)=>{
+            const lexerObj = {}
+            let lexerToken
+            if (token === '['){
+                lexerObj.type = "array"
+            }else if(token !== ']'){
+                if (!isNaN(token)){
+                lexerToken = Number(token)
+                }
+                lexerObj.type = typeof(lexerToken)
+                lexerObj.value = lexerToken
+            }
+            lexerObj.child = []
+            this.lexerArray.push(lexerObj);
+        });
+        return this.lexerArray;
     }
 }
 
 const arrayParser = new ArrayParser()
-console.log(arrayParser.tokenizer(str).length)
+const token = arrayParser.tokenizer(str)
+console.log(token.length)
+console.log(arrayParser.lexer(token))
+
