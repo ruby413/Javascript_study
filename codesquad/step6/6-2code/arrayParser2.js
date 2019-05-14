@@ -2,24 +2,46 @@ const str = "['1a3',[null,false,['11',[112233],112],55, '99'],33, true]"
 
 //   { type: 'array', value: '[', child: [
 //     { type: 'string', value: '1a3', child: [] },
+//     { type: 'number', value: 33, child: [] },
+//     { type: 'boolean', value: true, child: [] },
 //     { type: 'array', value: '[', child: [
 //         { type: 'object', value: null, child: [] },
 //         { type: 'boolean', value: true, child: [] },
+//         { type: 'number', value: 55, child: [] },
+//         { type: 'string', value: '99', child: [] },
 //         { type: 'array', value: '[', child: [
 //             { type: 'string', value: '11', child: [] },
+//             { type: 'number', value: 112, child: [] },
 //             { type: 'array', value: '[', child: [
 //                 { type: 'number', value: 112233, child: [] },
 //             ] },
-//             { type: 'number', value: 112, child: [] },
 //         ] },
         
-//         { type: 'number', value: 55, child: [] },
-//         { type: 'string', value: '99', child: [] },
 //       ] },
-//       { type: 'number', value: 33, child: [] },
-//       { type: 'boolean', value: true, child: [] },
 //   ] }
 
+// [ { type: 'array', value: '[', child: [
+//     { type: 'string', value: '1a3', child: [] },
+//     { type: 'number', value: 33, child: [] },
+//     { type: 'boolean', value: true, child: [] },
+//     { type: 'array', value: '[', child: [
+
+//         { type: 'object', value: null, child: [] },
+//         { type: 'boolean', value: true, child: [] },
+//         { type: 'number', value: 55, child: [] },
+//         { type: 'string', value: '99', child: [] },
+    
+//         { type: 'array', value: '[', child: [
+    
+//             { type: 'string', value: '11', child: [] },
+//             { type: 'number', value: 112, child: [] },
+//             { type: 'array', value: '[', child: [
+        
+//             { type: 'number', value: 112233, child: [] },
+//         ] },
+//         ] },
+//     ] },
+// ] },
  
 
 
@@ -28,6 +50,7 @@ const ArrayParser = class {
         this.tokenArr = []
         this.lexerArray = [];
         this.openBracketIdxStack = [];
+        this.parserArr = [];
     }
     tokenizer(str){
         let word = ""
@@ -79,23 +102,19 @@ const ArrayParser = class {
     }
 
     parser(lexerArr) {
-        lexerArr.forEach((lexerObj)=>{
-            if(lexerObj.value ==="["){
-                this.openBracketIdxStack.push(lexerArr.indexOf(lexerObj))
-            }
-        })
-
         lexerArr.forEach((el)=>{
             let elIndex = lexerArr.indexOf(el)
-            if (el.value !=='['){
-                lexerArr[elIndex-1].child.push(lexerArr[elIndex])
-                lexerArr.splice(elIndex,1)
-                // if(lexerArr[elIndex-1].value ==='['){
-                //     lexerArr[elIndex-1].child.push(lexerArr[elIndex])
-                //     lexerArr.splice(elIndex,1)
-                // }
+            if(el.value ==="["){
+                this.openBracketIdxStack.push(lexerArr.indexOf(el))
+                this.parserArr.push(lexerArr[elIndex])
+            }else if(el.value === ']'){ 
+                this.openBracketIdxStack.pop();
+            }else{
+                this.parserArr[this.openBracketIdxStack.length-1].child.push(el)
             }
         })
+        
+        
         // for(let i=0; i<lexerArr.length; i++){
         //     if(lexerArr[i].value === '['){
         //         for(let j=i; j<openBracketIdxStack[i]; j++){
@@ -108,7 +127,7 @@ const ArrayParser = class {
         //         // }
         //     }
         // }
-        return lexerArr
+        return this.parserArr 
     }
  }
 
@@ -119,8 +138,8 @@ console.log(lexer)
 const parser = arrayParser.parser(lexer)
 // console.log(token)
 // console.log(lexer)
- console.log(parser)
- console.log(JSON.stringify(parser, null, 2))
+ console.log(arrayParser.openBracketIdxStack)
+console.log(JSON.stringify(parser, null, 2))
 
    // const openBracketLastIdx = this.openBracketIdxStack[this.openBracketIdxStack.length-1]
         // for (let stackIdx = 0; stackIdx<this.openBracketIdxStack.length; stackIdx++ ){
