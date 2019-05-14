@@ -37,11 +37,9 @@ const ArrayParser = class {
             if (token === '[' || token === ']'){
                 lexerObj.type = "array"
                 lexerObj.value = token
+                lexerToken = token
             }else{
-                if((token === '[' || token === ']')){
-                    lexerObj.type = "array"
-                    lexerToken = token
-                }else if (!isNaN(token)){
+                if (!isNaN(token)){
                     lexerToken = Number(token)
                 }else if(token[0] === "'"){
                     if(token.match(/'/g).length%2 === 0){
@@ -72,7 +70,7 @@ const ArrayParser = class {
         lexerArr.forEach((lexerObj)=>{
             let lexerObjIndex = lexerArr.indexOf(lexerObj)
             if(lexerObj.value ==="["){
-                this.openBracketIdxStack.push(lexerArr.indexOf(lexerObj))
+                this.openBracketIdxStack.push(lexerObjIndex)
                 this.parserArr.push(lexerArr[lexerObjIndex])
             }else if(lexerObj.value === ']'){ 
                 this.openBracketIdxStack.pop();
