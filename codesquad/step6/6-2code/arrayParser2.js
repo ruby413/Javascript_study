@@ -1,11 +1,12 @@
-//const str = "['1a3',[null,false,['11',[112233],112],55, '99'],33, true]"
-//const str = "['1a'3']"
-const str = "[3d3]"
+const errorMsg = require('./errorMsg.js');
+const str = "['1a3',[null,false,['11',[112233],112],55, '99'],33, true]"
+// const str = "['1a'3']"
+// const str = "[3d3]"
 
 const ArrayParser = class {
     constructor(){
         this.tokenArr = []
-        this.lexerArray = [];
+        this.lexerArr = [];
         this.openBracketIdxStack = [];
         this.parserArr = [];
     }
@@ -29,8 +30,8 @@ const ArrayParser = class {
     }
 
 
-    lexer(arr){
-        arr.forEach((token)=>{
+    lexer(tokenArr){
+        tokenArr.forEach((token)=>{
             const lexerObj = {}
             let lexerToken
             if (token === '[' || token === ']'){
@@ -46,25 +47,28 @@ const ArrayParser = class {
                     if(token.match(/'/g).length%2 === 0){
                         lexerToken = token.match(/\w+/g)[0]
                     }else{
-                        throw new Error("'1a'3'은 올바른 문자열이 아닙니다!")
+                        throw new Error(errorMsg.notString(token))
                     }
                 }else if(token === "null"){
                     lexerToken = null
                 }else if(token === "true" || token === "false"){
                     lexerToken = Boolean(token)
                 }else{
-                    throw new Error("3d3은 알수 없는 타입입니다")
+                    throw new Error(errorMsg.syntaxError(token))
                 }
                 lexerObj.type = typeof(lexerToken)
                 lexerObj.value = lexerToken
             }
             lexerObj.child = []
-            this.lexerArray.push(lexerObj);
+            this.lexerArr.push(lexerObj);
         });
-        return this.lexerArray;
+        return this.lexerArr;
     }
 
-    parser(lexerArr) {
+    parser(str) {
+        const token = arrayParser.tokenizer(str)
+        const lexerArr = arrayParser.lexer(token)
+
         lexerArr.forEach((lexerObj)=>{
             let lexerObjIndex = lexerArr.indexOf(lexerObj)
             if(lexerObj.value ==="["){
@@ -92,11 +96,7 @@ const ArrayParser = class {
  }
 
 const arrayParser = new ArrayParser()
-const token = arrayParser.tokenizer(str)
-const lexer = arrayParser.lexer(token)
-console.log(lexer)
-const parser = arrayParser.parser(lexer)
-// console.log(token)
-// console.log(lexer)
- console.log(arrayParser.openBracketIdxStack)
+
+const parser = arrayParser.parser(str)
 console.log(JSON.stringify(parser, null, 2))
+
