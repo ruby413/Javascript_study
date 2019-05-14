@@ -1,25 +1,6 @@
-const str = "['1a3',[null,false,['11',[112233],112],55, '99'],33, true]"
-
-//   { type: 'array', value: '[', child: [
-//     { type: 'string', value: '1a3', child: [] },
-//     { type: 'number', value: 33, child: [] },
-//     { type: 'boolean', value: true, child: [] },
-//     { type: 'array', value: '[', child: [
-//         { type: 'object', value: null, child: [] },
-//         { type: 'boolean', value: true, child: [] },
-//         { type: 'number', value: 55, child: [] },
-//         { type: 'string', value: '99', child: [] },
-//         { type: 'array', value: '[', child: [
-//             { type: 'string', value: '11', child: [] },
-//             { type: 'number', value: 112, child: [] },
-//             { type: 'array', value: '[', child: [
-//                 { type: 'number', value: 112233, child: [] },
-//             ] },
-//         ] },
-        
-//       ] },
-//   ] }
-
+//const str = "['1a3',[null,false,['11',[112233],112],55, '99'],33, true]"
+//const str = "['1a'3']"
+const str = "[3d3]"
 
 const ArrayParser = class {
     constructor(){
@@ -62,11 +43,17 @@ const ArrayParser = class {
                 }else if (!isNaN(token)){
                     lexerToken = Number(token)
                 }else if(token[0] === "'"){
-                    lexerToken = token.match(/\w+/g)[0]
+                    if(token.match(/'/g).length%2 === 0){
+                        lexerToken = token.match(/\w+/g)[0]
+                    }else{
+                        throw new Error("'1a'3'은 올바른 문자열이 아닙니다!")
+                    }
                 }else if(token === "null"){
                     lexerToken = null
                 }else if(token === "true" || token === "false"){
                     lexerToken = Boolean(token)
+                }else{
+                    throw new Error("3d3은 알수 없는 타입입니다")
                 }
                 lexerObj.type = typeof(lexerToken)
                 lexerObj.value = lexerToken
@@ -90,10 +77,10 @@ const ArrayParser = class {
             }
         })
         this.parserArr.reverse();
-        this.parserArr.forEach((el)=>{
-            let parserObjIndex = this.parserArr.indexOf(el)
+        this.parserArr.forEach((parserObj)=>{
+            let parserObjIndex = this.parserArr.indexOf(parserObj)
             if(parserObjIndex !==0){
-                el.child.push(this.parserArr[parserObjIndex-1])
+                parserObj.child.push(this.parserArr[parserObjIndex-1])
             }
         })
         this.parserArr = this.parserArr[this.parserArr.length-1]
