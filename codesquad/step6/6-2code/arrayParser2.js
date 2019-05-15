@@ -6,7 +6,7 @@ const str = "['1a3',[null,false,['11',[112233],112],55, '99'],33, true]"
 const ArrayParser = class {
     constructor(){
         this.tokenArr = []
-        this.lexerArr = [];
+        this.lexerArray = [];
         this.openBracketIdxStack = [];
         this.parserArr = [];
     }
@@ -30,14 +30,18 @@ const ArrayParser = class {
     }
 
 
-    lexer(tokenArr){
-        tokenArr.forEach((token)=>{
+    lexer(arr){
+        arr.map((el)=>{
+            return this.lexerArray.push({type : })
+        })
+
+        arr.forEach((token)=>{
             const lexerObj = {}
             let lexerToken
             if (token === '[' || token === ']'){
                 lexerObj.type = "array"
                 lexerObj.value = token
-                lexerToken = token
+                lexerObj.type = "array"
             }else{
                 if (!isNaN(token)){
                     lexerToken = Number(token)
@@ -50,7 +54,7 @@ const ArrayParser = class {
                 }else if(token === "null"){
                     lexerToken = null
                 }else if(token === "true" || token === "false"){
-                    lexerToken = Boolean(token)
+                    token === "true" ? lexerToken = true : lexerToken = false 
                 }else{
                     throw new Error(errorMsg.syntaxError(token))
                 }
@@ -58,19 +62,16 @@ const ArrayParser = class {
                 lexerObj.value = lexerToken
             }
             lexerObj.child = []
-            this.lexerArr.push(lexerObj);
+            this.lexerArray.push(lexerObj);
         });
-        return this.lexerArr;
+        return this.lexerArray;
     }
 
-    parser(str) {
-        const token = arrayParser.tokenizer(str)
-        const lexerArr = arrayParser.lexer(token)
-
+    parser(lexerArr) {
         lexerArr.forEach((lexerObj)=>{
             let lexerObjIndex = lexerArr.indexOf(lexerObj)
             if(lexerObj.value ==="["){
-                this.openBracketIdxStack.push(lexerObjIndex)
+                this.openBracketIdxStack.push(lexerArr.indexOf(lexerObj))
                 this.parserArr.push(lexerArr[lexerObjIndex])
             }else if(lexerObj.value === ']'){ 
                 this.openBracketIdxStack.pop();
@@ -94,7 +95,12 @@ const ArrayParser = class {
  }
 
 const arrayParser = new ArrayParser()
-
-const parser = arrayParser.parser(str)
+const token = arrayParser.tokenizer(str)
+const lexer = arrayParser.lexer(token)
+console.log(token)
+console.log(lexer)
+const parser = arrayParser.parser(lexer)
+// console.log(token)
+// console.log(lexer)
+ console.log(arrayParser.openBracketIdxStack)
 console.log(JSON.stringify(parser, null, 2))
-
