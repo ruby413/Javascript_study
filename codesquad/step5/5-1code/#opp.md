@@ -5,6 +5,7 @@
 <br/><br/>
 
 ## 객체표현
+---
 ### 1. object literal
 - class 없이 object 로 표현이 가능하다. (비효율적)
 ```js
@@ -22,6 +23,9 @@ orderObj.showmsg();  //이주연님, 지금은 PM12:12 입니다
 ```
 
 <br/>
+
+--- 
+
 <br/>
 
 
@@ -44,7 +48,7 @@ const ju = new orderObj(answerArr[0], answerArr[1]);
 ju.showHealth(); //이주연님, 지금은 PM12:12 입니다
 ```
 <br/><br/>
-> 하지만 constructor pattern은 각각의 생성자 객체에 불필요한 메모리공간이 생기게 되는 한계가 있다. 이를 보완할 수 있는 방법이 Prototype 방식 (class, prototype pattern)이다. 
+> 하지만 constructor pattern은 각각의 생성자 객체에 불필요한 메모리공간이 생기게 되는 한계가 있다.
 
 
 ```js
@@ -53,13 +57,13 @@ ju
 ```
 <br/><br/>
 
-
+--- 
 
 ### 3. Class (ES2015)
 - class 는 prototype 을 자동으로 생성해서 만들어주는 method 이다. 
-- constructor pattern 과 패턴은 비슷해보이지만 내부 메모리 저장 구조는 prototype 구조이다. 
+- constructor pattern 과 패턴은 비슷해보이지만 내부 메모리 저장 구조는 다르다. 
     
-   - class의 메소드는 prototype 의 공간에 저장이 된다.
+   - constructor 가 생성되어도, 메모리는 각 메모리 객체가 생성되어 저장되는 것이 아닌, prototype 의 공간에 저장이 된다.
    - 따라서 불필요한 메모리가 생성되지 않는다
 - class 를 새롭게 생성하면 constructor은 자동으로 생성된다.
 
@@ -81,10 +85,11 @@ const ju = new orderObj(answerArr[0], answerArr[1]);
 ju.showmsg(); //이주연님, 지금은 PM12:12 입니다
 ```
 
+<br/><br/>
 
+------ 
 ### 4. Prototype pattern
 - 객체의 원형인 프로토타입을 이용하여 새로운 객체를 만들어내는 프로그래밍 기법
-- class가 Prototype pattern 기반으로 만들어졌다.
 
 ```js
 let answerArr = ["이주연", "PM12:12"]
@@ -103,57 +108,7 @@ ju.showmsg(); //이주연님, 지금은 PM12:12 입니다
 ```
 <br/><br/>
 
-> ### 4-1. Prototype 의 구조 
-<br/>
-
-```js
-const Person = function(name, first, second){
-    this.name=name;
-    this.first=first;
-    this.second=second;   
-}
- 
-Person.prototype.eyes = function(){
-    return 'prototype : '+ (this.first+this.second);
-}
- 
-const kim = new Person('kim', 10, 20);
-
-kim.eyes(); // "prototype : 30"
-```
-<br/>
-
->> 위의 sample을 prototype 의 구조에 맞춰  도식화 하면 아래와 같다.
-
-![Alt text](image/prototype1.png)
-<br/>
-- function Person(){} : 생성자 함수
-
-  - prototype 이 생성된다.
-  - prototype 은 Person Prototype Object를 바라본다. <br/> (Prototype Object의 constructor 는 다시 생성자 함수를 참조한다.)
-
-- kim : 생성자 객체
-
-  - __ proto __ :  Prototype link <br/> 생성자 함수의 prototype 인 Person Prototype Object를 바라본다. 
-
-- Person Prototype Object : Prototype Object
-
-  - constructor : 생성자 함수를 참조한다.
-  - 생성자 함수 prototype 에 설정한 메소드가 표시된다.
-<br/><br/>
-
-
->> 해당 도식화를 "프로토타입 체인"으로 확장하면 아래와 같다.
-<br/>
-
-![Alt text](image/prototype2.png)
-- kim 객체는 eyes를 직접 가지고 있지 않기 때문에 eyes의 속성을 찾을 때까지 상위 프로토타입을 탐색한다. 
-- 최상위인 Object의 prototype Object 까지 도달했는데도 못찾았을 경우 undefined 를 리턴함
-- 프로토타입 체인 : _proto_ 속성을 통해 상위 프로토타입과 연결되어 있는 형태
-
-<br/><br/>
-
-> ### 4-2. 메모리 관련 자바스크립트의 프로토타입 
+> ### 4-1. 메모리 관련 자바스크립트의 프로토타입 
 
 
 ```js
@@ -231,6 +186,35 @@ console.log(him); // Person { name: 'choi' }
 
 <br/><br/>
 
+> ### 4-2. 메모리 관련 자바스크립트의 프로토타입 
+<br/>
+
+![Alt text](image/prototype1.png)
+[프로토타입 체인, 최상위는 Object]
+![Alt text](image/prototype2.png)
+- kim 객체는 eyes를 직접 가지고 있지 않기 때문에 eyes의 속성을 찾을 때까지 상위 프로토타입을 탐색한다. 
+- 최상위인 Object의 prototype Object 까지 도달했는데도 못찾았을 경우 undefined 를 리턴함
+- 프로토타입 체인 : _proto_ 속성을 통해 상위 프로토타입과 연결되어 있는 형태
+
+<br/><br/>
+## 2. 프로토타입 객체생성방법
+
+```js
+// 객체 리터럴
+var obj1 = {};
+obj1.name = 'Lee';
+
+// Object() 생성자 함수
+var obj2 = new Object();
+obj2.name = 'Lee';
+
+// 생성자 함수
+function F() {}
+var obj3 = new F();
+obj3.name = 'Lee';
+```
+
+<br/><br/>
 ## 3. 상속 (Inheritance)
 ### 3-1 의사 클래스 패턴 상속
 super()
@@ -238,7 +222,5 @@ super()
 
 
 
-## 참고 
-http://insanehong.kr/post/javascript-prototype/<br/>
-https://poiemaweb.com/js-object-oriented-programming<br/>
-https://opentutorials.org/module/4047/24610
+참고 : http://insanehong.kr/post/javascript-prototype/
+https://poiemaweb.com/js-object-oriented-programming
