@@ -1,0 +1,9 @@
+
+<ul id="left_nav">
+    <li id="to_home"><a class="title" href="https://www.opentutorials.org/"><span>Open</span>tutorials.org</a></li> 
+    <li id="course_allview">
+        <a href="#" class="title">코스 전체목록</a>
+    </li>
+</ul>	
+
+			
