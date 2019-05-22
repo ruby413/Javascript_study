@@ -7,3 +7,4 @@ const solution = (n, m) => {
 const smallMath = (r, m) => {
     return r % m === 0 ? m : smallMath(m, r % m)
 }
+ 
