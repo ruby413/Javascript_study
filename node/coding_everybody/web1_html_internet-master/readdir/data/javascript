@@ -1,0 +1,4 @@
+
+if(!Cookies.get('donation_badge_disable')){
+	$('#donation_badge').show();
+}
