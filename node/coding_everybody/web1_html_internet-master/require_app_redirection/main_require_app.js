@@ -6,7 +6,7 @@ var qs = require('querystring');
     var app = http.createServer(function(request,response){
     var _url = request.url;
     var queryData = url.parse(_url, true).query;
-    function templateHTML(title, list, body){
+    function templateHTML(title, list, body, control){
       return `
           <!doctype html>
           <html>
@@ -17,7 +17,7 @@ var qs = require('querystring');
           <body>
           <h1><a href='/'>WEB</a></h1>
           ${list}
-          <a href="/create">create</a>
+          ${control}
           ${body}
           </body>
           </html>
@@ -40,7 +40,7 @@ var qs = require('querystring');
           var description = "Hi Node.js!";
           var title = "Welcome!";
           var list = templateList(filelist);
-          var template = templateHTML(title, list,`<h2>${title}</h2> <p>${description}</p>` )
+          var template = templateHTML(title, list,`<h2>${title}</h2> <p>${description}</p>`, `<a href="/create">create</a>` )
           response.end(template);
           response.writeHead(200);
         })
@@ -49,7 +49,7 @@ var qs = require('querystring');
           fs.readFile(`data/${queryData.id}`,`utf8`,  (err, description) => {
             var list = templateList(filelist);
             var title = queryData.id;
-            var template = templateHTML(title, list, `<h2>${title}</h2> <p>${description}</p>`)
+            var template = templateHTML(title, list, `<h2>${title}</h2> <p>${description}</p>`, `<a href="/create">create</a> <a href="/update?id=${title}">update</a>`)
             response.end(template);
             response.writeHead(200);
           });
@@ -58,7 +58,7 @@ var qs = require('querystring');
   }else if(url.parse(_url, true).pathname === "/create"){
     fs.readdir('./data', function(error, filelist){
       var list = templateList(filelist);
-      var title = queryData.id;
+      var title = 'WEB - create';
       var template = templateHTML(title, list, `<form action="http://localhost:3000/create_process" method="post">
       <p><input type="text" name="title" placeholder="title"></p>
       <p>
@@ -72,7 +72,6 @@ var qs = require('querystring');
       response.writeHead(200);
     });
   }else if(url.parse(_url, true).pathname === "/create_process"){
-    var template = 'Sucess!';
     var body = '';
     request.on('data', function (data) {
         body += data;
@@ -82,7 +81,7 @@ var qs = require('querystring');
         var title = post.title;
         var description = post.description;
         fs.writeFile(`data/${title}`, description, 'utf8', function(err) {
-          response.writeHead(302, {Location: `/?id=${title}`});
+          response.writeHead(302, {Location: `/?id=${title}`}); //302 - 강제이동
           response.end();
       }); 
     });
