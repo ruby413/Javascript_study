@@ -97,16 +97,16 @@
  * Created by AvILoS on 6/16/15.
  */
 var net = require('net');
-
+    
 process.stdin.resume();         // 표준입력처리(입력받을수 있도록 변경)
 var client = net.connect(
         {host:'localhost', port:5000},
         function(){
-            console.log('connection!');
+            console.log(client.localPort + ' is connection!' );
         });
 
 client.on('data', function(data){       // 서버로부터 데이터 수신시 콘솔에 출력
-    console.log(data.toString());
+        console.log("someone : " + data.toString());
 });
 
 client.on('end', function(data){
