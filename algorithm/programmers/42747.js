@@ -10,4 +10,4 @@ const solution = (c) => {
     return c.length
 }
 
-console.log(solution([0,0,0]))
+console.log(solution([1,1,2,4,8]))
