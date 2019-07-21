@@ -11,7 +11,7 @@ const client = net.connect(
         rl.prompt();
 });
 let answer = ""
-
+  
 client.on('data', function(data){   
     console.log("someone : " + data.toString());
     rl.prompt();
