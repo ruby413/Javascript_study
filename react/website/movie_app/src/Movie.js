@@ -17,4 +17,4 @@ function MoviePoster() {
     )
 }
 
-export default Movie;
+export default Movie; 
