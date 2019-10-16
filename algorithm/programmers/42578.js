@@ -15,4 +15,4 @@ const doubleNum = (json) =>{
       double *= json[keys]+1;
     }
     return double
-}
+} 
