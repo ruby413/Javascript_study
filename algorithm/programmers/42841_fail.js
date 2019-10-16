@@ -8,7 +8,7 @@ const solution = (baseball) => {
     })
     let newStrike = strike.map((number)=>{
        return String(number).split('');
-    })
+    }) 
     // console.log(newStrike)
     
     // return answer
