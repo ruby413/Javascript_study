@@ -8,5 +8,5 @@ const solution = (participant, completion) => {
         }
     }
 }
-
+ 
 console.log( solution(["mislav", "stanko", "mislav", "ana"],["stanko", "ana", "mislav"]) )
